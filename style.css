@@ -1,0 +1,847 @@
+/* ==========================================================================
+   Design Tokens: Color Themes
+   ========================================================================== */
+
+/* 1. Default (Light) Theme */
+:root {
+    /* Backgrounds */
+    --clr-background: #F8FAFC; /* Very soft, cool gray */
+    --clr-surface: #FFFFFF;    /* Pure white for cards/sections to pop */
+    
+    /* Text */
+    --clr-text-main: #334155;  /* Deep slate (softer than pure black) */
+    --clr-text-muted: #64748b; /* Medium slate for secondary text */
+    
+    /* Accents (Professional Blue) */
+    --clr-primary: #3B82F6;    
+    --clr-primary-hover: #2563EB;
+    
+    /* Borders & UI elements */
+    --clr-border: #E2E8F0;
+}
+
+/* 2. Dark Theme */
+/* We use a data attribute so we can easily toggle this with JavaScript later */
+[data-theme="dark"] {
+    /* Backgrounds */
+    --clr-background: #0F172A; /* Deep, rich slate */
+    --clr-surface: #1E293B;    /* Slightly lighter slate for depth */
+    
+    /* Text */
+    --clr-text-main: #F8FAFC;  /* Crisp off-white */
+    --clr-text-muted: #94A3B8; /* Muted cool gray */
+    
+    /* Accents (Adjusted for dark mode contrast) */
+    --clr-primary: #60A5FA;    /* Brighter blue to stand out on dark backgrounds */
+    --clr-primary-hover: #3B82F6;
+    
+    /* Borders & UI elements */
+    --clr-border: #334155;
+}
+
+/* 3. Smooth Global Transitions */
+/* This ensures that when the user clicks a "theme toggle" button, the colors fade smoothly */
+body {
+    background-color: var(--clr-background);
+    color: var(--clr-text-main);
+    transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.card, .header, .footer {
+    transition: background-color 0.4s ease, border-color 0.4s ease;
+}
+
+/* ==========================================================================
+   Reset & Base Styles
+   ========================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    /* This prevents your 80px fixed header from covering the top of the sections when you click a nav link */
+    scroll-padding-top: 80px; 
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+    /* Your existing transitions will apply here */
+}
+
+a {
+    text-decoration: none;
+}
+
+
+
+/* ==========================================================================
+   Layout Utilities
+   ========================================================================== */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.875rem 1.75rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.btn-primary {
+    background-color: var(--clr-primary);
+    color: #FFFFFF; /* Always white on primary button for readability */
+}
+
+.btn-primary:hover {
+    background-color: var(--clr-primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--clr-text-main);
+    border-color: var(--clr-border);
+}
+
+.btn-secondary:hover {
+    border-color: var(--clr-primary);
+    color: var(--clr-primary);
+    transform: translateY(-2px);
+}
+
+
+/* ==========================================================================
+   Header & Navigation
+   ========================================================================== */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    /* Glassmorphism effect: slightly transparent background with blur */
+    background-color: rgba(248, 250, 252, 0.85); 
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--clr-border);
+    z-index: 1000;
+}
+
+/* Adjust the glass effect for Dark Mode */
+[data-theme="dark"] .header {
+    background-color: rgba(15, 23, 42, 0.85);
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 80px;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 800; /* Changed from 800 to 400 so the first name is lighter */
+    color: var(--clr-text-main);
+    letter-spacing: -0.02em;
+}
+
+.logo span {
+    color: var(--clr-primary);
+    font-weight: 800; /* Added this so the last name stays bold */
+}
+/* Hide text links on mobile, we will handle mobile menu later */
+.nav-links {
+    display: none; 
+    list-style: none;
+    gap: 2rem;
+}
+
+.nav-links a {
+    color: var(--clr-text-muted);
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: var(--clr-primary);
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Theme Toggle Button Styling */
+.theme-toggle {
+    background: transparent;
+    border: none;
+    color: var(--clr-text-muted);
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+    color: var(--clr-primary);
+    background-color: var(--clr-border);
+}
+
+/* Icon Swapping Logic */
+.moon-icon { display: block; }
+.sun-icon { display: none; }
+
+[data-theme="dark"] .moon-icon { display: none; }
+[data-theme="dark"] .sun-icon { display: block; }
+
+/* Small Button Modifier for the Navbar CTA */
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+}
+
+/* ==========================================================================
+   Navigation Media Queries
+   ========================================================================== */
+@media (min-width: 800px) {
+    .nav-links {
+        display: flex; /* Show links on desktop */
+    }
+}
+
+@media (max-width: 500px) {
+    .nav-cta {
+        display: none; /* Hide the "Hire Me" button on very small phones to save space */
+    }
+}
+
+
+/* ==========================================================================
+   Hero Section
+   ========================================================================== */
+.hero {
+    /* Large top padding leaves room for a future fixed navigation bar */
+    padding: 8rem 0 4rem; 
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+}
+
+.hero-inner {
+    display: flex;
+    flex-direction: column-reverse; /* Text on bottom, image on top for mobile */
+    align-items: center;
+    gap: 3rem;
+}
+
+.hero-content {
+    flex: 1;
+    text-align: center;
+}
+
+.hero-title {
+    /* clamp(minimum, preferred, maximum) for fluid responsive text */
+    font-size: clamp(2.5rem, 5vw, 4rem); 
+    color: var(--clr-text-main);
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.hero-subtitle {
+    font-size: clamp(1.1rem, 2vw, 1.25rem);
+    color: var(--clr-text-muted);
+    margin-bottom: 2.5rem;
+    max-width: 600px;
+    margin-inline: auto; /* Centers the text block on mobile */
+}
+
+.hero-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.hero-image-wrapper {
+    flex: 1;
+    width: 100%;
+    max-width: 450px;
+    display: flex;
+    justify-content: center;
+}
+
+/* Replace the old placeholder CSS with this */
+.hero-image {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover; /* This makes sure your photo doesn't stretch or distort */
+    border-radius: 50%; /* Makes the image a perfect circle */
+    box-shadow: 0 20px 40px -10px rgba(0,0,0,0.15);
+    border: 4px solid var(--clr-surface); /* Adds a clean border around your photo */
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* Optional: Adds a slight hover effect to your photo */
+.hero-image:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+}
+
+[data-theme="dark"] .hero-image {
+    box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
+    border-color: var(--clr-border);
+}
+
+/* ==========================================================================
+   Global Reusable Components
+   ========================================================================== */
+.section-padding {
+    padding: 6rem 0;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.section-header {
+    margin-bottom: 4rem;
+}
+
+.section-title {
+    font-size: clamp(2rem, 3vw, 2.5rem);
+    color: var(--clr-text-main);
+    font-weight: 800;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+}
+
+.section-subtitle {
+    font-size: 1.1rem;
+    color: var(--clr-text-muted);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* ==========================================================================
+   Services Section
+   ========================================================================== */
+/* We use CSS Grid for automatic responsiveness without complex media queries */
+.services-grid {
+    display: grid;
+    /* This creates columns that are at least 300px wide, and fill the space evenly */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.service-card {
+    background-color: var(--clr-surface);
+    border: 1px solid var(--clr-border);
+    border-radius: 1rem;
+    padding: 2.5rem 2rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.4s ease, border-color 0.4s ease;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+    border-color: var(--clr-primary);
+}
+
+[data-theme="dark"] .service-card:hover {
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+.service-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    background-color: rgba(59, 130, 246, 0.1); /* Very light primary color */
+    color: var(--clr-primary);
+    border-radius: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.service-card h3 {
+    font-size: 1.25rem;
+    color: var(--clr-text-main);
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.service-card p {
+    color: var(--clr-text-muted);
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+
+/* ==========================================================================
+   Global Utility Addition
+   ========================================================================== */
+/* We use this to gently alternate background colors between sections */
+.bg-light {
+    background-color: var(--clr-surface);
+}
+
+/* ==========================================================================
+   Projects Section
+   ========================================================================== */
+.projects-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* 1 column on mobile */
+    gap: 3rem;
+}
+
+.project-card {
+    background-color: var(--clr-background);
+    border: 1px solid var(--clr-border);
+    border-radius: 1rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.4s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .project-card:hover {
+    box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.5);
+}
+
+/* --- Media Container & Main Image --- */
+.project-media {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9; /* Perfect widescreen box */
+    background-color: var(--clr-border); 
+    overflow: hidden;
+    border-bottom: 1px solid var(--clr-border);
+}
+
+.main-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    object-position: top; /* The Magic Fix: Anchors the screenshot to the top! */
+    display: block;
+}
+
+/* --- Video Overlay --- */
+.hover-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the video perfectly fills the 16:9 box */
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.4s ease;
+    z-index: 2;
+    pointer-events: none; /* Ensures the mouse interaction triggers the container cleanly */
+}
+
+/* Fades video in when hovering over the media box */
+.project-media:hover .hover-video {
+    opacity: 1;
+}
+
+/* --- Card Content --- */
+.project-content {
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Pushes the links to the bottom if cards are different heights */
+}
+
+.project-title {
+    font-size: 1.5rem;
+    color: var(--clr-text-main);
+    margin-bottom: 1rem;
+    font-weight: 800;
+}
+
+.project-description {
+    color: var(--clr-text-muted);
+    margin-bottom: 2rem;
+    line-height: 1.7;
+    flex-grow: 1;
+}
+
+.tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    list-style: none;
+    padding: 0;
+}
+
+.tech-stack li {
+    font-size: 0.8rem;
+    color: var(--clr-primary);
+    background-color: rgba(59, 130, 246, 0.1);
+    padding: 0.35rem 0.8rem;
+    border-radius: 2rem;
+    font-weight: 700;
+}
+
+.project-links {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* ==========================================================================
+   Projects Media Queries
+   ========================================================================== */
+@media (min-width: 900px) {
+    .projects-grid {
+        /* Creates 2 equal columns on desktop */
+        grid-template-columns: repeat(2, 1fr); 
+    }
+}
+
+/* ==========================================================================
+   About Section
+   ========================================================================== */
+.about-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4rem;
+}
+
+/* --- Bio Text --- */
+.about-text p {
+    color: var(--clr-text-muted);
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* --- Workflow Process --- */
+.about-process {
+    margin-top: 3rem;
+}
+
+.about-process h3 {
+    font-size: 1.5rem;
+    color: var(--clr-text-main);
+    margin-bottom: 2rem;
+    font-weight: 800;
+}
+
+.process-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 0;
+}
+
+.process-list li {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+}
+
+.process-step {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--clr-primary);
+    background-color: rgba(59, 130, 246, 0.1);
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    flex-shrink: 0; /* Prevents the circle from squishing on mobile */
+}
+
+.process-list h4 {
+    color: var(--clr-text-main);
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+}
+
+.process-list p {
+    color: var(--clr-text-muted);
+    font-size: 0.95rem;
+    margin: 0; 
+}
+
+/* --- Skills Card --- */
+.skills-card {
+    background-color: var(--clr-surface);
+    border: 1px solid var(--clr-border);
+    border-radius: 1rem;
+    padding: 2.5rem;
+    height: 100%;
+    transition: border-color 0.4s ease, background-color 0.4s ease;
+}
+
+.skills-card h3 {
+    font-size: 1.5rem;
+    color: var(--clr-text-main);
+    margin-bottom: 2rem;
+    font-weight: 800;
+}
+
+.skill-category {
+    margin-bottom: 2rem;
+}
+
+.skill-category:last-child {
+    margin-bottom: 0;
+}
+
+.skill-category h4 {
+    color: var(--clr-text-muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+}
+
+.skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 0;
+}
+
+.skill-tags li {
+    background-color: var(--clr-background);
+    border: 1px solid var(--clr-border);
+    color: var(--clr-text-main);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.skill-tags li:hover {
+    border-color: var(--clr-primary);
+    color: var(--clr-primary);
+    transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   About Section Media Queries
+   ========================================================================== */
+@media (min-width: 900px) {
+    .about-grid {
+        /* Creates two columns, making the left one slightly wider */
+        grid-template-columns: 1.2fr 1fr; 
+        align-items: start;
+    }
+}
+
+
+/* ==========================================================================
+   Testimonials Section
+   ========================================================================== */
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+.testimonial-card {
+    background-color: var(--clr-background);
+    border: 1px solid var(--clr-border);
+    border-radius: 1rem;
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.4s ease;
+}
+
+.testimonial-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+    border-color: var(--clr-primary);
+}
+
+[data-theme="dark"] .testimonial-card:hover {
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+.quote-icon {
+    color: var(--clr-primary);
+    opacity: 0.2; /* Kept subtle so it doesn't overpower the text */
+    margin-bottom: 1.5rem;
+}
+
+.testimonial-text {
+    font-size: 1.1rem;
+    color: var(--clr-text-main);
+    font-style: italic;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+    flex-grow: 1; /* Pushes the profile info to the bottom evenly */
+}
+
+.client-profile {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-top: 1px solid var(--clr-border);
+    padding-top: 1.5rem;
+}
+
+.client-avatar {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--clr-border);
+}
+
+/* Find this block and add the transition line */
+.client-info h4 {
+    color: var(--clr-text-main);
+    font-size: 1.05rem;
+    margin-bottom: 0.1rem;
+    font-weight: 700;
+    transition: color 0.3s ease; /* <-- ADD THIS LINE */
+}
+
+/* Add this brand new block right below it */
+a.client-info:hover h4 {
+    color: var(--clr-primary);
+}
+.client-info span {
+    color: var(--clr-text-muted);
+    font-size: 0.9rem;
+}
+
+
+/* ==========================================================================
+   Testimonials Media Queries
+   ========================================================================== */
+@media (min-width: 800px) {
+    .testimonials-grid {
+        grid-template-columns: repeat(2, 1fr); /* Two columns on desktop */
+    }
+}
+
+
+/* ==========================================================================
+   Contact Section & Footer
+   ========================================================================== */
+.contact-cards-container {
+    display: grid;
+    /* This creates a responsive 3-column layout that naturally drops to 1 column on mobile */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.contact-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+    padding: 3rem 1.5rem;
+    background-color: var(--clr-surface);
+    border: 1px solid var(--clr-border);
+    border-radius: 1rem;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contact-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--clr-primary);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+[data-theme="dark"] .contact-card:hover {
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.contact-icon {
+    width: 65px;
+    height: 65px;
+    background-color: rgba(59, 130, 246, 0.1);
+    color: var(--clr-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-bottom: 0.5rem;
+}
+
+.contact-details h4 {
+    color: var(--clr-text-main);
+    font-size: 1.25rem;
+    margin-bottom: 0.2rem;
+    font-weight: 700;
+}
+
+.contact-details p {
+    color: var(--clr-text-muted);
+    font-size: 1rem;
+}
+
+/* --- Footer --- */
+.footer {
+    padding: 2rem 0;
+    border-top: 1px solid var(--clr-border);
+    background-color: var(--clr-surface);
+    color: var(--clr-text-muted);
+    font-size: 0.9rem;
+}
+
+
+/* ==========================================================================
+   Media Queries (Desktop Layout)
+   ========================================================================== */
+@media (min-width: 800px) {
+    .hero-inner {
+        flex-direction: row; /* Side-by-side on larger screens */
+        gap: 4rem;
+    }
+    
+    .hero-content {
+        text-align: left;
+    }
+
+    .hero-subtitle {
+        margin-inline: 0; /* Reset centering for desktop */
+    }
+
+    .hero-actions {
+        justify-content: flex-start;
+    }
+}
