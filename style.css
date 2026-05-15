@@ -455,6 +455,34 @@ a {
 }
 
 /* --- Video Overlay --- */
+
+/* --- Video Play Indicator --- */
+.video-indicator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Perfectly centers the icon */
+    width: 64px;
+    height: 64px;
+    background-color: rgba(15, 23, 42, 0.6); /* Dark, semi-transparent background */
+    backdrop-filter: blur(4px); /* Adds the modern glass effect */
+    -webkit-backdrop-filter: blur(4px);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #F8FAFC; /* White play icon */
+    z-index: 3; /* Sits on top of the video */
+    pointer-events: none; /* Ensures hovering over the button still triggers the video */
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* When the user hovers over the media box, the play button shrinks and fades away */
+.project-media:hover .video-indicator {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+}
+
 .hover-video {
     position: absolute;
     top: 0;
